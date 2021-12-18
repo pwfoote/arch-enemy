@@ -1,30 +1,19 @@
-const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
+const express = require('express');
 
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+const app = express ();
 
-  const { Server } = require('ws');
+// Sets an initial port.
+const PORT = process.env.PORT || 3001;
 
-const wss = new Server({ server });
+// Sets up the Express app to handle data parsing
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
 
-wss.on('connection', (ws) => {
-    console.log('Client connected');
-    ws.on('close', () => console.log('Client disconnected'));
-  });
+// ROUTES
+require('./routes/apiRoutes')(app);
+require('./routes/htmlRoutes')(app);
 
-  setInterval(() => {
-    wss.clients.forEach((client) => {
-      client.send(new Date().toTimeString());
-    });
-  }, 1000);
-
-  var HOST = location.origin.replace(/^http/, 'ws')
-var ws = new WebSocket(HOST);
-var el;
-
-ws.onmessage = function (event) {
-  el = document.getElementById('server-time');
-  el.innerHTML = 'Server time: ' + event.data;
-};
+app.listen(PORT, function() {
+    console.log(`App listening on PORT: ${PORT}`);
+});
