@@ -1,6 +1,6 @@
-var http = require ('http')
+const PORT = process.env.PORT || 3000;
+const INDEX = '/index.html';
 
-http.createServer(function (request, response) {
-    ronsponse.writeHead(200, {"Content-Type": "text/plain"})
-    response.end("Hello World/n")
-}).listen(process.env.PORT)
+const server = express()
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
